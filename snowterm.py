@@ -4,8 +4,13 @@ import sys
 import time
 
 
+def max_dimensions(window):
+    height, width = window.getmaxyx()
+    return height - 2, width - 1
+
+
 def snowflake_char(window):
-    _, width = window.getmaxyx()
+    width = max_dimensions(window)[1]
     char = random.choice(['+', '*', '.'])
     position = random.randrange(1, width)
     return (0, position, char)
@@ -14,21 +19,18 @@ def snowflake_char(window):
 def update_snowflakes(prev, window):
     new = {}
     for (height, position), char in prev.items():
-        max_height, _ = window.getmaxyx()
-        if height + 1 >= max_height - 1:
-            new_height = height
-        elif prev.get((height + 1, position)):
-            new_height = height
-        else:
-            new_height = height + 1
+        max_height = max_dimensions(window)[0]
+        new_height = height + 1
+        if new_height > max_height or prev.get((new_height, position)):
+            new_height -= 1
         new[(new_height, position)] = char
     return new
 
 
 def redisplay(snowflakes, window):
     for (height, position), char in snowflakes.items():
-        max_height, max_width  = window.getmaxyx()
-        if height >= max_height - 1 or position >= max_width:
+        max_height, max_width = max_dimensions(window)
+        if height > max_height or position >= max_width:
             continue
         window.addch(height, position, char)
 
@@ -42,7 +44,7 @@ def draw_moon(window):
         '   *** ',
         '  **   ',
     ]
-    start_position = window.getmaxyx()[1] - 10
+    start_position = max_dimensions(window)[1] - 10
     window.attrset(curses.color_pair(1))
     for height, line in enumerate(moon, start=1):
         for position, sym in enumerate(line, start=start_position):
@@ -61,8 +63,8 @@ def main(window):
     window.border()
     snowflakes = {}
     while True:
-        height, width = window.getmaxyx()
-        if len(snowflakes.keys()) >= (height - 2) * width:
+        height, width = max_dimensions(window)
+        if len(snowflakes.keys()) >= height * width:
             snowflakes.clear()
         snowflakes = update_snowflakes(snowflakes, window)
         snowflake = snowflake_char(window)
