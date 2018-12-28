@@ -26,19 +26,40 @@ def update_snowflakes(prev, window):
 
 
 def redisplay(snowflakes, window):
-    for (height, width), char in snowflakes.items():
+    for (height, position), char in snowflakes.items():
         max_height, max_width  = window.getmaxyx()
-        if height >= max_height - 1 or width >= max_width:
+        if height >= max_height - 1 or position >= max_width:
             continue
-        window.addch(height, width, char)
+        window.addch(height, position, char)
+
+
+def draw_moon(window):
+    moon = [
+        '  **   ',
+        '   *** ',
+        '    ***',
+        '    ***',
+        '   *** ',
+        '  **   ',
+    ]
+    start_position = window.getmaxyx()[1] - 10
+    window.attrset(curses.color_pair(1))
+    for height, line in enumerate(moon, start=1):
+        for position, sym in enumerate(line, start=start_position):
+            if sym.strip():
+                window.addch(height, position, sym)
+    window.attrset(curses.color_pair(0))
 
 
 def main(window):
+    if curses.can_channnge_color():
+        curses.init_color(curses.COLOR_BLACK, 0,0,0)
+        curses.init_color(curses.COLOR_WHITE, 1000, 1000, 1000)
+        curses.init_color(curses.COLOR_YELLOW, 1000, 1000, 0)
+    curses.init_pair(1, curses.COLOR_YELLOW, 0)
     curses.curs_set(0)
     window.border()
-    window.clear()
     snowflakes = {}
-    
     while True:
         height, width = window.getmaxyx()
         if len(snowflakes.keys()) >= (height - 2) * width:
@@ -47,11 +68,12 @@ def main(window):
         snowflake = snowflake_char(window)
         snowflakes[(snowflake[0], snowflake[1])] = snowflake[2]
         window.clear()
+        draw_moon(window)
         redisplay(snowflakes, window)
         window.refresh()
         time.sleep(0.2)
 
-    
+
 if __name__ == '__main__':
     try:
         curses.wrapper(main)
