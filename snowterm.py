@@ -52,7 +52,7 @@ def draw_moon(window):
 
 
 def main(window):
-    if curses.can_channnge_color():
+    if curses.can_change_color():
         curses.init_color(curses.COLOR_BLACK, 0,0,0)
         curses.init_color(curses.COLOR_WHITE, 1000, 1000, 1000)
         curses.init_color(curses.COLOR_YELLOW, 1000, 1000, 0)
