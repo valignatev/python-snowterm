@@ -53,13 +53,16 @@ def draw_moon(window):
     window.attrset(curses.color_pair(0))
 
 
-def main(window):
+def main(window, speed):
     if curses.can_change_color():
         curses.init_color(curses.COLOR_BLACK, 0,0,0)
         curses.init_color(curses.COLOR_WHITE, 1000, 1000, 1000)
         curses.init_color(curses.COLOR_YELLOW, 1000, 1000, 0)
     curses.init_pair(1, curses.COLOR_YELLOW, 0)
-    curses.curs_set(0)
+    try:
+        curses.curs_set(0)
+    except Exception:
+        pass  # Can't hide cursor in 2019 huh?
     window.border()
     snowflakes = {}
     while True:
@@ -73,11 +76,21 @@ def main(window):
         draw_moon(window)
         redisplay(snowflakes, window)
         window.refresh()
-        time.sleep(0.2)
+        time.sleep((0.2) / (speed / 100))
 
 
 if __name__ == '__main__':
+    speed = 100
+    if len(sys.argv) > 1:
+        try:
+            speed = int(sys.argv[1])
+        except ValueError:
+            print(
+                'Usage:\npython snowterm.py [SPEED]\n'
+                'SPEED is integer representing percents.',
+            )
+            sys.exit(1)
     try:
-        curses.wrapper(main)
+        curses.wrapper(main, speed)
     except KeyboardInterrupt:
-        pass
+        sys.exit(0)
