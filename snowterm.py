@@ -40,6 +40,9 @@ def main(window):
     snowflakes = {}
     
     while True:
+        height, width = window.getmaxyx()
+        if len(snowflakes.keys()) >= (height - 2) * width:
+            snowflakes.clear()
         snowflakes = update_snowflakes(snowflakes, window)
         snowflake = snowflake_char(window)
         snowflakes[(snowflake[0], snowflake[1])] = snowflake[2]
