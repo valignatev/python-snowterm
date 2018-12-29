@@ -67,7 +67,7 @@ def main(window, speed):
     snowflakes = {}
     while True:
         height, width = max_dimensions(window)
-        if len(snowflakes.keys()) >= height * width:
+        if len(snowflakes.keys()) >= 0.95 * (height * width):
             snowflakes.clear()
         snowflakes = update_snowflakes(snowflakes, window)
         snowflake = snowflake_char(window)
