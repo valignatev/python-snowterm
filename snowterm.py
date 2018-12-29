@@ -48,8 +48,7 @@ def draw_moon(window):
     window.attrset(curses.color_pair(1))
     for height, line in enumerate(moon, start=1):
         for position, sym in enumerate(line, start=start_position):
-            if sym.strip():
-                window.addch(height, position, sym)
+            window.addch(height, position, sym)
     window.attrset(curses.color_pair(0))
 
 
