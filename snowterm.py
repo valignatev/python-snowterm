@@ -76,7 +76,10 @@ def main(window, speed):
         draw_moon(window)
         redisplay(snowflakes, window)
         window.refresh()
-        time.sleep((0.2) / (speed / 100))
+        try:
+            time.sleep((0.2) / (speed / 100))
+        except ZeroDivisionError:
+            time.sleep(0.2)
 
 
 if __name__ == '__main__':
