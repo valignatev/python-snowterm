@@ -62,7 +62,6 @@ def main(window, speed):
         curses.curs_set(0)
     except Exception:
         pass  # Can't hide cursor in 2019 huh?
-    window.border()
     snowflakes = {}
     while True:
         height, width = max_dimensions(window)
